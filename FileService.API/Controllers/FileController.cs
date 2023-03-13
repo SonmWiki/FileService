@@ -21,6 +21,9 @@ public class FileController : ControllerBase
         _appConfiguration = appConfigurationAccessor.Value;
     }
 
+    // TODO: Try to do all methods async if it's possible 
+    // TODO: Replace tokens with normal authorization
+    
     [HttpGet]
     [Route("{fileName}")]
     public IActionResult Get(string fileName)
@@ -46,6 +49,8 @@ public class FileController : ControllerBase
         
         var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
         var filePath = Path.Combine(_appConfiguration.FileStoragePath, fileName);
+
+        Directory.CreateDirectory(_appConfiguration.FileStoragePath);
         
         await using (var fileStream = new FileStream(filePath, FileMode.Create))
         {
@@ -53,6 +58,21 @@ public class FileController : ControllerBase
         }
 
         return new OkObjectResult(new { fileName = fileName });
+    }
+    
+    [HttpDelete]
+    [Route("delete/{fileName}")]
+    public IActionResult Delete(string fileName, string token)
+    {
+        if (token != _appConfiguration.Token) return Unauthorized();
+        
+        var filePath = Path.Combine(_appConfiguration.FileStoragePath, fileName);
+        
+        if (!System.IO.File.Exists(filePath)) return NotFound();
+
+        System.IO.File.Delete(filePath);
+
+        return Ok();
     }
     
 }
