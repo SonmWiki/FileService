@@ -1,11 +1,18 @@
+using FileService.API.Configuration;
+using FileService.API.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+builder.Services.Configure<AppConfiguration>(builder.Configuration.GetSection("AppConfiguration"));
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddTransient<IContentTypeProviderService, ContentTypeProviderService>();
 
 var app = builder.Build();
 
