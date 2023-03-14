@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using FileService.API.Configuration;
+﻿using FileService.API.Configuration;
 using FileService.API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
